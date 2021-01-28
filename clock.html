@@ -29,44 +29,44 @@ body{
  /* text-shadow: -3px 0 0px #F44336, 3px 0 0px #673AB7, 0 -3px 0px #3bff77, 0 3px 0px #FFEB3B; */
 }
 
-#color{
+#colorChooser{
 	color:gray;
 	text-shadow:0 0;
-	font-size:20px
+	font-size:20px;
+  visibility:visible;
 }
 </style>
 </head>
 
 <body>
-<css id="css"></css>
-<clock id="clock"></clock>
-<!--<a id="button"><input type="button" onClick="fullscreen()"></a>-->
-<div id="color">
-<input type="color" id="in" value="#00FF00" onChange="colorChange(value)">
-<br>Choose color,then press SPACE to hide.
+<div id="clock"></div>
+<div id="colorChooser">
+  <input type="color" id="in" value="#00FF00" onChange="colorChange(value)">
+  <br>
+  <p>Press SPACE to hide color chooser.</p>
 </div>
 </body>
 
 <script>
-let clock = document.getElementById("clock");
-
-/*カラーパレットのリスナー*/
-//document.getElementById("in").addEventListener("input", e=>{colorChange(e.target.value);});
+const clock = document.getElementById("clock");
+const colorChooser = document.getElementById("colorChooser");
 
 /*スペースバーのキーリスナー*/
 document.addEventListener("keydown", e =>{
 	if(32 == e.keyCode){
-		if(pallet){
+		if(colorChooser.style.visibility == "visible"){
 			hide();
+      console.log("hide");
 		}else{
 			show();
+      console.log("show");
 		}
 	}
 });
 
 /*スマホ用タッチリスナー*/
 clock.addEventListener("touchstart", e =>{
-	if(pallet){
+	if(colorChooser.style.visibility == "visible"){
 		hide();
 	}else{
 		show();
@@ -79,13 +79,9 @@ console.log(navigator.appVersion);
 /*時間用変数*/
 let date,h,m,s,ms;
 /*色用変数*/
-let pallet = true;
 let color = "#00FF00";
 
-//document.documentElement.requestFullscreen();
 setDate();
-
-
 setInterval("countUp()",100);
 
 /*時計を動かすためのメソッド*/
@@ -144,19 +140,19 @@ function dispClock(){
 }
 
 /*スペースバー押したときのメソッド*/
-function hide(){document.getElementById("color").innerHTML = "";  pallet=false;}
+function hide(){
+  colorChooser.style.visibility = "hidden";
+}
 function show(){
-	document.getElementById("color").innerHTML =
-	'<input type="color" id="in" value="' + color +'"><br>Press SPACE to hide.'; pallet=true;
-	document.getElementById("in").addEventListener("input", e=>{colorChange(e.target.value)});
+	colorChooser.style.visibility = "visible";
 };
 
 /*文字の光彩を変えるメソッド*/
 function colorChange(inputColor){
 	color = inputColor;
 	console.log("color:" + color);
-	document.getElementById("css").innerHTML = '<style type="text/css">clock{text-shadow:0 0 20px '+ color +';}</style>';
-
+  clock.style.textShadow = "0 0 20px "+ color;
+	// document.getElementById("css").innerHTML = '<style type="text/css">clock{text-shadow:0 0 20px '+ color +';}</style>';
 }
 
 </script>
