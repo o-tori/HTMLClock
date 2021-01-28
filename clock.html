@@ -1,0 +1,164 @@
+<!DOCTYPE = html>
+<html>
+
+<head>
+<meta charset="utf-8">
+<link rel="shortcut icon" href="favicon.ico">
+<title>Clock</title>
+
+<style type="text/css">
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+html {
+  display: table;
+}
+body{
+  background-color:black;
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+
+  font-size:130pt;
+  color:brack;
+  text-shadow: 0 0 20px lime;
+/*  text-shadow: -3px 0 0px lime,3px 0 0px lime,0 -3px 0px lime,0 3px 0px lime,-3px -3px 0px red,-3px 3px 0px red,3px -3px 0px red,3px 3px 0px red;*/
+ /* text-shadow: -3px 0 0px #F44336, 3px 0 0px #673AB7, 0 -3px 0px #3bff77, 0 3px 0px #FFEB3B; */
+}
+
+#color{
+	color:gray;
+	text-shadow:0 0;
+	font-size:20px
+}
+</style>
+</head>
+
+<body>
+<css id="css"></css>
+<clock id="clock"></clock>
+<!--<a id="button"><input type="button" onClick="fullscreen()"></a>-->
+<div id="color">
+<input type="color" id="in" value="#00FF00" onChange="colorChange(value)">
+<br>Choose color,then press SPACE to hide.
+</div>
+</body>
+
+<script>
+let clock = document.getElementById("clock");
+
+/*カラーパレットのリスナー*/
+//document.getElementById("in").addEventListener("input", e=>{colorChange(e.target.value);});
+
+/*スペースバーのキーリスナー*/
+document.addEventListener("keydown", e =>{
+	if(32 == e.keyCode){
+		if(pallet){
+			hide();
+		}else{
+			show();
+		}
+	}
+});
+
+/*スマホ用タッチリスナー*/
+clock.addEventListener("touchstart", e =>{
+	if(pallet){
+		hide();
+	}else{
+		show();
+	}
+});
+
+
+
+console.log(navigator.appVersion);
+/*時間用変数*/
+let date,h,m,s,ms;
+/*色用変数*/
+let pallet = true;
+let color = "#00FF00";
+
+//document.documentElement.requestFullscreen();
+setDate();
+
+
+setInterval("countUp()",100);
+
+/*時計を動かすためのメソッド*/
+function countUp(){
+	ms += 100;
+	if(1000 < ms && ms < 1100){
+		if(h == 23 && m == 59 && s == 59){
+			h = 00;
+			m = 0;
+			s = 0;
+		}else if(m == 59 && s == 59){
+			h++;
+			m = 0;
+			s = 0;
+		}else if(s == 59){
+			m++;
+			s = 0;
+			setDate();
+		}else{
+			s++;
+		}
+		if(s % 10 == 0){setDate();}
+		dispClock();
+	}
+	if(1000 < ms){ms -= 1000;}
+}
+
+/*Date更新用メソッド*/
+function setDate(){
+	date = new Date();
+	h = date.getHours();
+	m = date.getMinutes();
+	s = date.getSeconds();
+	ms = date.getMilliseconds();
+}
+
+/*表示用メソッド*/
+function dispClock(){
+	if(h < 10 && m < 10 && s < 10){
+		document.getElementById("clock").innerHTML ="0" + h + ":0" + m + ":0" + s;
+	}else if(h < 10 && m < 10){
+		document.getElementById("clock").innerHTML ="0" + h + ":0" + m + ":" + s;
+	}else if(h < 10 && s < 10){
+		document.getElementById("clock").innerHTML ="0" + h + ":" + m + ":0" + s;
+	}else if(m < 10 && s < 10){
+		document.getElementById("clock").innerHTML = h + ":0" + m + ":0" + s;
+	}else if(h < 10){
+		document.getElementById("clock").innerHTML ="0" + h + ":" + m + ":" + s;
+	}else if(m < 10){
+		document.getElementById("clock").innerHTML = h + ":0" + m + ":" + s;
+	}else if(s < 10){
+		document.getElementById("clock").innerHTML = h + ":" + m + ":0" + s;
+	}else{
+		document.getElementById("clock").innerHTML = h + ":" + m + ":" + s;
+	}
+}
+
+/*スペースバー押したときのメソッド*/
+function hide(){document.getElementById("color").innerHTML = "";  pallet=false;}
+function show(){
+	document.getElementById("color").innerHTML =
+	'<input type="color" id="in" value="' + color +'"><br>Press SPACE to hide.'; pallet=true;
+	document.getElementById("in").addEventListener("input", e=>{colorChange(e.target.value)});
+};
+
+/*文字の光彩を変えるメソッド*/
+function colorChange(inputColor){
+	color = inputColor;
+	console.log("color:" + color);
+	document.getElementById("css").innerHTML = '<style type="text/css">clock{text-shadow:0 0 20px '+ color +';}</style>';
+
+}
+
+</script>
+
+</html>
